@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTransfer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="c1">
+        <h1>Chat - HTransfer</h1>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="输入消息">
+        <button onclick="sendMessage(messageInput.value,'message')">发送</button>
+    </div>
+
+    <div style="padding: 0.3rem;">
+        <p class="info2" id="info2"></p>
+        <div class="urlcontainer">
+            <pre class="urlinfo" id="urlinfo"></pre>
+            <img alt="qrcode" src="" id="qrcode" height="120px" />
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="loader-container">
+          <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+            </svg>
+          </div>
+          <p id="output1">╰(￣ω￣ｏ) 等待服务端响应中...</p>
+        </div>
+      </div>
+      <div class=".footer" style="padding: 0.3rem;">
+        <pre>Powered by <a href="https://horz.team" style="color:deepskyblue;"><img src="https://5432.xin/assets/image/HoRzTeam.png" alt="logo" width="24px" style="display: inline;" />HoRzTeam</a> - Version: 3.1415</pre>
+      </div>
+      <style>html{height:100%}body{min-height:100%;display:flex;flex-direction:column}.container{flex:1}pre{white-space:pre-wrap;word-wrap:break-word}body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#f2f2f2;overflow:hidden}.loader{position:relative;margin:0 auto;width:100px}.loader:before{content:"";display:block}.circular{animation:rotate 2s linear infinite;height:100%;transform-origin:center center;width:100%}.path{stroke-dasharray:1,200;stroke-dashoffset:0;animation:dash 1.5s ease-in-out infinite,color 6s ease-in-out infinite;stroke-linecap:round}@keyframes rotate{to{transform:rotate(1turn)}}@keyframes dash{0%{stroke-dasharray:1,200;stroke-dashoffset:0}50%{stroke-dasharray:89,200;stroke-dashoffset:-35px}to{stroke-dasharray:89,200;stroke-dashoffset:-124px}}@keyframes color{0%,to{stroke:#d62d20}40%{stroke:#0057e7}66%{stroke:#008744}80%,90%{stroke:#ffa700}}.loader-container{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(1turn)}}@keyframes change-color{0%,to{border-top-color:#008744}25%{border-top-color:#0057e7}50%{border-top-color:#d62d20}75%{border-top-color:#ffa700}}</style>
+      <script src="/global.js"></script><script>
+        let ws;
+
+        const o1 = document.querySelector("#output1")
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        document.querySelector(".c1").style="display: none"
+
+        async function init() {
+            const response = await fetch('https://'+basedomain+'/create-connection');
+            const { connectionId, qrCode } = await response.json();
+            
+            document.getElementById('qrcode').src = qrCode;
+            
+            ws = new WebSocket(`wss://${basedomain}?id=${connectionId}`);
+            
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                displayMessage(message, 'received');
+            };
+        }
+
+        function sendMessage(text,method="message") {
+            const message = {
+                type: method,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+            
+            ws.send(JSON.stringify(message));
+            displayMessage(message, 'sent');
+            messageInput.value = '';
+        }
+
+        function displayMessage(message, type) {
+            console.log(message)
+            const div = document.createElement('div');
+            div.style.textAlign = type === 'sent' ? 'right' : 'left';
+            div.style.color = type === 'sent' ? 'blue' : 'green';
+            div.textContent = `${message.text} (${new Date(message.timestamp).toLocaleTimeString()})`;
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                            //原内容
+            if(message.type=="message"){
+        document.querySelector(".c1").style="display: block"}
+
+                        
+            //增加内容
+if(message.type=="status"){
+    if(message.status=="waiting"){
+        o1.innerHTML="连接服务器成功，等待连接！<br>o(*^▽^*)┛"
+        document.getElementById("urlinfo").innerHTML="使用教程<br><br>1. 另一个设备扫描二维码或点击链接<br>2. 进行操作"
+    }
+    if(message.status=="connected"){
+        o1.innerHTML="连接第二端成功，等待数据！<br>(*￣3￣)╭"
+        document.getElementById("urlinfo").innerHTML="等待进行操作"
+    }
+    if(message.status=="disconnected"){
+        o1.innerHTML="已断开连接！<br>（；´д｀）ゞ"
+    }
+}
+if(message.type=="sharelink"){
+sendMessage("done","sharelinkcallback");
+o1.innerHTML="收到指令“sharelink”，等待跳转<br>(*´∀ ˋ*)"
+setTimeout("location.href='"+message.text+"'", 3000 )
+}
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
