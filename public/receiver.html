@@ -1,60 +1,145 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>接收端</title>
+    <title>Client - HTransfer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        #messages {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .card-icon {
+            background: #f0f5ff;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .material-icons {
+            font-size: 36px;
+            color: #007AFF;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 500;
             margin-bottom: 10px;
-            padding: 10px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .cards-container {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>接收端</h1>
-    <div id="messages"></div>
-    <input type="text" id="messageInput" placeholder="输入消息">
-    <button onclick="sendMessage()">发送</button>
+    <h1>Client - HTransfer</h1>
+    
+    <div class="cards-container">
+        <a href="/send/message.html" class="card linka">
+            <div class="card-icon">
+                <span class="material-icons">chat</span>
+            </div>
+            <div class="card-title">发送消息</div>
+            <div class="card-description">
+                发送即时消息到其他设备
+            </div>
+        </a>
 
+        <a href="/send/sharelink.html" class="card linka">
+            <div class="card-icon">
+                <span class="material-icons">link</span>
+            </div>
+            <div class="card-title">分享链接</div>
+            <div class="card-description">
+                快速分享网页链接到其他设备
+            </div>
+        </a>
+    </div>
+
+    <script src="/global.js"></script>
     <script>
-        let ws;
-        const messagesDiv = document.getElementById('messages');
-        const messageInput = document.getElementById('messageInput');
+        var connectionId = "";
 
         function init() {
             const urlParams = new URLSearchParams(window.location.search);
-            const connectionId = urlParams.get('id');
-            
-            ws = new WebSocket(`wss://${location.host}?id=${connectionId}`);
-            
-            ws.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-                displayMessage(message, 'received');
-            };
+            connectionId = urlParams.get('id');
+            var x = document.querySelectorAll(".linka");
+            var i;
+            for (i = 0; i < x.length; i++) {
+                x[i].href += "?id="+urlParams.get('id');
+            }
         }
-
-        function sendMessage() {
-            const message = {
-                text: messageInput.value,
-                timestamp: new Date().toISOString()
-            };
-            
-            ws.send(JSON.stringify(message));
-            displayMessage(message, 'sent');
-            messageInput.value = '';
-        }
-
-        function displayMessage(message, type) {
-            const div = document.createElement('div');
-            div.style.textAlign = type === 'sent' ? 'right' : 'left';
-            div.style.color = type === 'sent' ? 'blue' : 'green';
-            div.textContent = `${message.text} (${new Date(message.timestamp).toLocaleTimeString()})`;
-            messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
         init();
     </script>
 </body>

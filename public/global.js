@@ -1,0 +1,1 @@
+const basedomain = location.host
