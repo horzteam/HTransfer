@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat - Host</title>
+    <style>
+        #qrcode img {
+            max-width: 300px;
+        }
+        #messages {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="qrcode"></div>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        let ws;
+        let partnerId;
+        
+        function connect() {
+            ws = new WebSocket(`wss://${window.location.host}`);
+            
+            ws.onopen = () => {
+                console.log('Connected to server');
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'id') {
+                    // 获取并显示二维码
+                    fetch(`/qr/${data.id}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('qrcode').innerHTML = 
+                                `<img src="${data.qrcode}">`;
+                        });
+                } else if (data.type === 'message') {
+                    // 显示接收到的消息
+                    const messagesDiv = document.getElementById('messages');
+                    messagesDiv.innerHTML += `<p><strong>Partner:</strong> ${data.content}</p>`;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    partnerId = data.from;
+                }
+            };
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message && partnerId) {
+                ws.send(JSON.stringify({
+                    targetId: partnerId,
+                    content: message
+                }));
+                
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                
+                input.value = '';
+            }
+        }
+
+        connect();
+    </script>
+</body>
+</html>
