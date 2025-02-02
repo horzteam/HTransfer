@@ -3,65 +3,57 @@ const http = require('http');
 const WebSocket = require('ws');
 const QRCode = require('qrcode');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// 服务静态文件
+// 存储连接配对
+const connections = new Map();
+
+// 提供静态文件
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 存储连接
-let connections = new Map();
-
-// WebSocket 连接处理
+// WebSocket连接处理
 wss.on('connection', (ws, req) => {
-    const id = Math.random().toString(36).substring(7);
+    const connectionId = req.url.split('?id=')[1];
     
-    // 存储连接
-    connections.set(id, ws);
-    
-    // 发送ID给客户端
-    ws.send(JSON.stringify({
-        type: 'id',
-        id: id
-    }));
+    if (!connections.has(connectionId)) {
+        connections.set(connectionId, { initiator: ws });
+    } else {
+        const conn = connections.get(connectionId);
+        conn.receiver = ws;
+        
+        // 设置双向通信
+        setupCommunication(conn.initiator, conn.receiver);
+    }
 
-    // 处理消息
-    ws.on('message', (message) => {
-        try {
-            const data = JSON.stringify(message.toString());
-            const targetId = data.targetId;
-            const targetWs = connections.get(targetId);
-            
-            if (targetWs) {
-                targetWs.send(JSON.stringify({
-                    type: 'message',
-                    content: data.content,
-                    from: id
-                }));
-            }
-        } catch (e) {
-            console.error('Error processing message:', e);
-        }
-    });
-
-    // 处理断开连接
     ws.on('close', () => {
-        connections.delete(id);
+        connections.delete(connectionId);
     });
 });
 
-// 创建二维码的端点
-app.get('/qr/:id', async (req, res) => {
-    const id = req.params.id;
-    const url = `http://${req.headers.host}/chat.html?id=${id}`;
-    try {
-        const qrcode = await QRCode.toDataURL(url);
-        res.json({ qrcode });
-    } catch (err) {
-        res.status(500).json({ error: 'QR Code generation failed' });
-    }
+function setupCommunication(initiator, receiver) {
+    initiator.on('message', (message) => {
+        if (receiver.readyState === WebSocket.OPEN) {
+            receiver.send(message);
+        }
+    });
+
+    receiver.on('message', (message) => {
+        if (initiator.readyState === WebSocket.OPEN) {
+            initiator.send(message);
+        }
+    });
+}
+
+// 生成连接ID和对应的二维码
+app.get('/create-connection', async (req, res) => {
+    const connectionId = uuidv4();
+    const url = `https://cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev/receiver.html?id=${connectionId}`;
+    const qrCode = await QRCode.toDataURL(url);
+    res.json({ connectionId, qrCode });
 });
 
 const PORT = process.env.PORT || 3000;

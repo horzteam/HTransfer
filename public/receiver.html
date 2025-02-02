@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>发送端</title>
+    <title>接收端</title>
     <style>
         #messages {
             height: 300px;
@@ -13,8 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>发送端</h1>
-    <img id="qrcode" alt="QR Code">
+    <h1>接收端</h1>
     <div id="messages"></div>
     <input type="text" id="messageInput" placeholder="输入消息">
     <button onclick="sendMessage()">发送</button>
@@ -24,11 +23,9 @@
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
 
-        async function init() {
-            const response = await fetch('/create-connection');
-            const { connectionId, qrCode } = await response.json();
-            
-            document.getElementById('qrcode').src = qrCode;
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const connectionId = urlParams.get('id');
             
             ws = new WebSocket(`wss://${location.host}?id=${connectionId}`);
             
