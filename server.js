@@ -36,14 +36,16 @@ wss.on('connection', (ws, req) => {
 
 function setupCommunication(initiator, receiver) {
     initiator.on('message', (message) => {
-        if (receiver.readyState === WebSocket.OPEN) {
-            receiver.send(message);
+        if (receiver && receiver.readyState === WebSocket.OPEN) {
+            // 确保消息是字符串
+            receiver.send(message.toString());
         }
     });
 
     receiver.on('message', (message) => {
-        if (initiator.readyState === WebSocket.OPEN) {
-            initiator.send(message);
+        if (initiator && initiator.readyState === WebSocket.OPEN) {
+            // 确保消息是字符串
+            initiator.send(message.toString());
         }
     });
 }
