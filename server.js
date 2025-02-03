@@ -111,5 +111,8 @@ app.get('/create-connection', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
+    console.log(`HTransfer - transfer.cool
+Copyright 2025 HoRzTeam [i@horz.team]
+Computed by MZCompute GmbH. [wang@mingze.de]\n`)
     console.log(`Server running on port ${PORT}`);
 });
