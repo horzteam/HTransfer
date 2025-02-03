@@ -11,8 +11,8 @@ const wss = new WebSocket.Server({ server });
 
 // 存储连接配对
 const connections = new Map();
-const basedomain = "www.transfer.cool"
-//const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
+//const basedomain = "www.transfer.cool"
+const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
 // 提供静态文件
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -22,7 +22,7 @@ app.use(cors({
 }));
 
 function consolemsg(msg){
-    console.log(msg)
+    console.log(msg);
 }
 
 // WebSocket连接处理
