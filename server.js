@@ -3,7 +3,6 @@ const http = require('http');
 const WebSocket = require('ws');
 const QRCode = require('qrcode');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 
 const app = express();
@@ -22,8 +21,12 @@ app.use(cors({
     credentials: true
 }));
 
+function consolemsg(msg){
+    console.log(msg)
+}
+
 // WebSocket连接处理
-wss.on('connection', (ws, req) => {
+/*wss.on('connection', (ws, req) => {
     const connectionId = req.url.split('?id=')[1];
     
     if (!connections.has(connectionId)) {
@@ -58,6 +61,43 @@ wss.on('connection', (ws, req) => {
         }
     });
 });
+*/
+
+wss.on('connection', (ws, req) => {
+    const connectionId = req.url.split('?id=')[1];
+    consolemsg(`[HT-OPEN][${connectionId}] 新连接建立`);
+    
+    if (!connections.has(connectionId)) {
+        connections.set(connectionId, { initiator: ws });
+        consolemsg(`[HT-CONN1][${connectionId}] 发送端已连接`);
+        sendStatusMessage(ws, 'waiting');
+    } else {
+        const conn = connections.get(connectionId);
+        conn.receiver = ws;
+        consolemsg(`[HT-CONN2][${connectionId}] 接收端已连接`);
+        
+        sendStatusMessage(conn.initiator, 'connected');
+        sendStatusMessage(conn.receiver, 'connected');
+        
+        setupCommunication(conn.initiator, conn.receiver);
+    }
+
+    ws.on('close', () => {
+        const conn = findConnectionBySocket(ws);
+        if (conn) {
+            const [connId, { initiator, receiver }] = conn;
+            consolemsg(`[HT-DISC][${connId}] ${ws === initiator ? '发送端' : '接收端'}断开连接`);
+            
+            if (ws === initiator && receiver) {
+                sendStatusMessage(receiver, 'disconnected');
+            } else if (ws === receiver && initiator) {
+                sendStatusMessage(initiator, 'disconnected');
+            }
+            
+            connections.delete(connId);
+        }
+    });
+});
 
 function findConnectionBySocket(ws) {
     for (const [connId, conn] of connections.entries()) {
@@ -80,7 +120,7 @@ function sendStatusMessage(ws, status) {
 }
 
 function setupCommunication(initiator, receiver) {
-    initiator.on('message', (message) => {
+    /*initiator.on('message', (message) => {
         if (receiver && receiver.readyState === WebSocket.OPEN) {
             receiver.send(message.toString());
         }
@@ -90,7 +130,24 @@ function setupCommunication(initiator, receiver) {
         if (initiator && initiator.readyState === WebSocket.OPEN) {
             initiator.send(message.toString());
         }
-    });
+    });*/
+        // 找到当前连接的ID
+        const connectionPair = findConnectionBySocket(initiator);
+        const connectionId = connectionPair ? connectionPair[0] : 'unknown';
+    
+        initiator.on('message', (message) => {
+            consolemsg(`[HT-T1][${connectionId}] 发送端 -> 接收端:`, message.toString());
+            if (receiver && receiver.readyState === WebSocket.OPEN) {
+                receiver.send(message.toString());
+            }
+        });
+    
+        receiver.on('message', (message) => {
+            consolemsg(`[HT-T2][${connectionId}] 接收端 -> 发送端:`, message.toString());
+            if (initiator && initiator.readyState === WebSocket.OPEN) {
+                initiator.send(message.toString());
+            }
+        });
 }
 
 function generateRandomString(length) {
@@ -106,13 +163,14 @@ app.get('/create-connection', async (req, res) => {
     const connectionId = generateRandomString(9);
     const url = `https://`+basedomain+`/receiver.html?id=${connectionId}`;
     const qrCode = await QRCode.toDataURL(url);
+    consolemsg("[HT-新建链接ID]Connection ID: "+connectionId)
     res.json({ connectionId, qrCode, url });
 });
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`HTransfer - transfer.cool
+    consolemsg(`HTransfer - transfer.cool
 Copyright 2025 HoRzTeam [i@horz.team]
 Computed by MZCompute GmbH. [wang@mingze.de]\n`)
-    console.log(`Server running on port ${PORT}`);
+    consolemsg(`Server running on port ${PORT} \n`);
 });
