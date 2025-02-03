@@ -174,17 +174,23 @@
         }
 
         function sendMessage() {
-            if (!messageInput.value.trim()) return;
+            try {
+                if (!messageInput.value.trim()) return;
 
-            const message = {
-                text: messageInput.value,
-                timestamp: new Date().toISOString(),
-                type: "sharelink"
-            };
-            
-            ws.send(JSON.stringify(message));
-            displayMessage(message, 'sent');
-            messageInput.value = '';
+const message = {
+    text: messageInput.value,
+    timestamp: new Date().toISOString(),
+    type: "sharelink"
+};
+
+ws.send(JSON.stringify(message));
+displayMessage(message, 'sent');
+messageInput.value = '';
+}
+catch(err) {
+    statusDiv.innerHTML = `<span class="status-done">发送失败</span>`;
+}
+
         }
 
         function displayMessage(message, type) {
