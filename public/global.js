@@ -1,1 +1,1 @@
-const basedomain = location.host
+const basedomain = "www.transfer.cool"
