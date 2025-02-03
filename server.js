@@ -28,81 +28,30 @@ function consolemsg(msg){
     console.log(msg);
 }
 
-// WebSocket连接处理
-/*wss.on('connection', (ws, req) => {
-    const connectionId = req.url.split('?id=')[1];
-    
-    if (!connections.has(connectionId)) {
-        connections.set(connectionId, { initiator: ws });
-        // 通知发起方等待连接
-        sendStatusMessage(ws, 'waiting');
-    } else {
-        const conn = connections.get(connectionId);
-        conn.receiver = ws;
-        
-        // 通知双方连接已建立
-        sendStatusMessage(conn.initiator, 'connected');
-        sendStatusMessage(conn.receiver, 'connected');
-        
-        // 设置双向通信
-        setupCommunication(conn.initiator, conn.receiver);
-    }
-
-    ws.on('close', () => {
-        const conn = findConnectionBySocket(ws);
-        if (conn) {
-            const [connId, { initiator, receiver }] = conn;
-            
-            // 通知另一方连接断开
-            if (ws === initiator && receiver) {
-                sendStatusMessage(receiver, 'disconnected');
-            } else if (ws === receiver && initiator) {
-                sendStatusMessage(initiator, 'disconnected');
-            }
-            
-            connections.delete(connId);
-        }
-    });
-});
-*/
-
 wss.on('connection', (ws, req) => {
     const connectionId = req.url.split('?id=')[1];
-    //new
     if (!connectionId) {
         console.log(`[HT-REFU]连接被拒绝: 无效的连接ID`);
         ws.close(1008, '无效的连接ID');
         return;
     }
-    //new
     consolemsg(`[HT-OPEN][${connectionId}] 新连接建立`);
-    //new
     const existingConnection = connections.get(connectionId);
     if (existingConnection && existingConnection.receiver) {
         console.log(`[HT-REFU][${connectionId}] 连接被拒绝: 连接已满`);
         ws.close(1008, '连接已满');
         return;
     }
-    // new
     if (!connections.has(connectionId)) {
         connections.set(connectionId, { initiator: ws });
         consolemsg(`[HT-CONN1][${connectionId}] 发送端已连接`);
         sendStatusMessage(ws, 'waiting');
     } else {
-        /*
-        const conn = connections.get(connectionId);
-        conn.receiver = ws;
-        consolemsg(`[HT-CONN2][${connectionId}] 接收端已连接`);
-        
-        sendStatusMessage(conn.initiator, 'connected');
-        sendStatusMessage(conn.receiver, 'connected');
-        
-        setupCommunication(conn.initiator, conn.receiver);*/
-        //new
+
         const conn = connections.get(connectionId);
         if (!conn.receiver) {
             conn.receiver = ws;
-            console.log(`[${connectionId}] 接收端已连接`);
+            console.log(`[HT-CONN][${connectionId}] 接收端已连接`);
             sendStatusMessage(conn.initiator, 'connected');
             sendStatusMessage(conn.receiver, 'connected');
         } else {
@@ -110,7 +59,7 @@ wss.on('connection', (ws, req) => {
             ws.close(1008, '连接已满');
             return;
         }
-        //new
+
     }
 
     ws.on('close', () => {
@@ -165,38 +114,6 @@ function sendStatusMessage(ws, status) {
     }
 }
 
-/*function setupCommunication(initiator, receiver) {*/
-    /*initiator.on('message', (message) => {
-        if (receiver && receiver.readyState === WebSocket.OPEN) {
-            receiver.send(message.toString());
-        }
-    });
-
-    receiver.on('message', (message) => {
-        if (initiator && initiator.readyState === WebSocket.OPEN) {
-            initiator.send(message.toString());
-        }
-    });*/
-        // 找到当前连接的ID
-        /*
-        const connectionPair = findConnectionBySocket(initiator);
-        const connectionId = connectionPair ? connectionPair[0] : 'unknown';
-    
-        initiator.on('message', (message) => {
-            consolemsg(`[HT-T1][${connectionId}] 发送端 -> 接收端:`, message.toString());
-            if (receiver && receiver.readyState === WebSocket.OPEN) {
-                receiver.send(message.toString());
-            }
-        });
-    
-        receiver.on('message', (message) => {
-            consolemsg(`[HT-T2][${connectionId}] 接收端 -> 发送端:`, message.toString());
-            if (initiator && initiator.readyState === WebSocket.OPEN) {
-                initiator.send(message.toString());
-            }
-        });
-}*/
-
 function generateRandomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789';
     let result = '';
@@ -211,13 +128,6 @@ function generateRandomString(length) {
     return (conn.initiator ? 1 : 0) + (conn.receiver ? 1 : 0);
 }
 app.get('/create-connection', async (req, res) => {
-    /*const connectionId = generateRandomString(9);
-    const url = `https://`+basedomain+`/receiver.html?id=${connectionId}`;
-    const qrCode = await QRCode.toDataURL(url);
-    consolemsg("[HT-新建链接ID]Connection ID: "+connectionId)
-    res.json({ connectionId, qrCode, url });*/
-
-    // 生成一个未被使用的连接ID
     let connectionId;
     do {
         connectionId = generateRandomString(9);
