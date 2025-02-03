@@ -93,8 +93,17 @@ function setupCommunication(initiator, receiver) {
     });
 }
 
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  }
+
 app.get('/create-connection', async (req, res) => {
-    const connectionId = uuidv4();
+    const connectionId = generateRandomString(9);
     const url = `https://`+basedomain+`/receiver.html?id=${connectionId}`;
     const qrCode = await QRCode.toDataURL(url);
     res.json({ connectionId, qrCode, url });
