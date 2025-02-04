@@ -78,17 +78,27 @@ wss.on('connection', (ws, req) => {
         }
     });
     ws.on('message', (message) => {
-        if(JSON.parse(message.toString()).type!="h"){const conn = findConnectionBySocket(ws);
-            if (conn) {
-                const [connId, { initiator, receiver }] = conn;
+        try {
+            if(JSON.parse(message.toString()).type!="h"){const conn = findConnectionBySocket(ws);
+                if (conn) {
+                    const [connId, { initiator, receiver }] = conn;
+                    const role = ws === initiator ? '发送端' : '接收端';
+                    const target = ws === initiator ? receiver : initiator;
+                    console.log(`[HT-T][${connId}] ${role} 发送消息:`, + message.toString());
+                    
+                    if (target && target.readyState === WebSocket.OPEN) {
+                        target.send(message.toString());
+                    }
+                }}
+        }
+        catch(err) {
+            const conn = findConnectionBySocket(ws);
+            if(conn){
+                const [connId, { initiator }] = conn;
                 const role = ws === initiator ? '发送端' : '接收端';
-                const target = ws === initiator ? receiver : initiator;
-                console.log(`[HT-T][${connId}] ${role} 发送消息:`, + message.toString());
-                
-                if (target && target.readyState === WebSocket.OPEN) {
-                    target.send(message.toString());
-                }
-            }}
+                console.log(`[HT-T][[${connId}] ${role} 非标准消息] `, + message.toString());
+            }
+        }
     });
 });
 

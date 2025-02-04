@@ -62,9 +62,17 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             padding: 20px;
             margin-bottom: 20px;
-        }.c1,.c2 {
+        }.c1 {
             height: 680px;
             overflow-y: auto;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .c2 {
+            height: 100%;
             border-radius: 10px;
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -176,6 +184,9 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             vertical-align: middle;
             margin-right: 5px;
         }
+        .width100{
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -190,19 +201,20 @@ Computed by MZCompute GmbH. [wang@mingze.de]
         </div>
     </div>
 
+    <div class="c2">
+        <h3>温馨提示 - HTransfer</h3>
+        <h1>( •́ὤ•̀) 请问您还在吗？</h1>
+        <div class="input-container">
+            <button onclick="imhere()" class="width100">我在！</button>
+        </div>
+    </div>
+
     <div class="c1">
         <h1>Chat - HTransfer</h1>
         <div id="messages"></div>
         <div class="input-container">
             <input type="text" id="messageInput" placeholder="输入消息...">
             <button onclick="sendMessage(messageInput.value,'message')">发送</button>
-        </div>
-    </div>
-    <div class="c2">
-        <h3>温馨提示 - HTransfer</h3>
-        <h1>请问您还在吗？</h1>
-        <div class="input-container">
-            <button onclick="imhere()">我在！</button>
         </div>
     </div>
 
