@@ -188,7 +188,7 @@ body.dark-mode #messageInput::placeholder {
 /* 主题切换按钮样式 */
 .theme-toggle {
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
     padding: 8px 16px;
     border-radius: 15px;
@@ -205,8 +205,8 @@ body.dark-mode #messageInput::placeholder {
 
 @media (max-width: 600px) {
     .theme-toggle {
-        top: 10px;
-        right: 10px;
+        bottom: 20px;
+        right: 20px;
     }
 }
 
@@ -237,6 +237,16 @@ body.dark-mode #messageInput::placeholder {
             <div class="card-title">分享链接</div>
             <div class="card-description">
                 快速分享网页链接到其他设备
+            </div>
+        </a>
+
+        <a href="/send/text.html" class="card linka">
+            <div class="card-icon">
+                <span class="material-icons">description</span>
+            </div>
+            <div class="card-title">传输文本</div>
+            <div class="card-description">
+                快速分享文本文件到其他设备
             </div>
         </a>
     </div>

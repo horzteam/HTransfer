@@ -11,6 +11,27 @@ const messagesDiv = document.getElementById('messages');
 const messageInput = document.getElementById('messageInput');
 document.querySelector(".c1").style = "display: none";
 document.querySelector(".c2").style = "display: none";
+document.querySelector(".c4").style = "display: none";
+
+function downloadtxt(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+   
+    element.style.display = 'none';
+    document.body.appendChild(element);
+   
+    element.click();
+   
+    document.body.removeChild(element);
+  }
+
+function copy(id){
+    var copyText = document.getElementById(id);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+}
 
 async function init(initv = 1) {
     hbs = 0;
@@ -82,8 +103,16 @@ function displayStatus(message) {
     }
     return void (0);
 }
+
+function displayText(message){
+    document.getElementById("text-filename").value=message.title;
+    document.getElementById("text-text").value=message.text;
+    document.querySelector(".c4").style = "display: block";
+}
+
 function displayMessage(message, type) {
     if (message.type != "h") {
+        hbs = 0;
         const div = document.createElement('div');
         div.className = `message ${type}`;
         div.textContent = `${message.text || displayStatus(message)} (${new Date(message.timestamp).toLocaleTimeString()})`;
@@ -122,6 +151,7 @@ function displayMessage(message, type) {
         o1.innerHTML = "收到指令sharelink，等待跳转<br>(*´∀ ˋ*)"
         setTimeout("location.href='" + message.text + "'", 3000)
     }
+    if(message.type=="text"){displayText(message)};
 }
 
 init();

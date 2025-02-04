@@ -71,7 +71,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             padding: 20px;
             margin-bottom: 20px;
         }
-        .c2,.c3 {
+        .c2,.c3,.c4 {
             height: 100%;
             border-radius: 10px;
             background: white;
@@ -107,7 +107,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             margin-bottom: 20px;
         }
 
-        #messageInput {
+        #messageInput,#text-filename {
             flex: 1;
             padding: 12px;
             border: 2px solid #ddd;
@@ -117,7 +117,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             transition: border-color 0.3s;
         }
 
-        #messageInput:focus {
+        #messageInput:focus,#text-filename:focus {
             border-color: #007bff;
         }
 
@@ -191,6 +191,21 @@ Computed by MZCompute GmbH. [wang@mingze.de]
         .width100{
             width: 100%;
         }
+        #text-text{
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 16px;
+            width:100%;
+            max-width:100%;
+            height:50vh;
+        }
+        #text-text:focus{
+            outline: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -221,7 +236,14 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             <button onclick="sendMessage(messageInput.value,'message')">发送</button>
         </div>
     </div>
-
+    <div class="c4">
+        <h1>Text - HTransfer</h1>
+        <input type="text" id="text-filename" readonly value="Filename" class="width100" style="box-sizing: border-box;"><br><br>
+            <textarea id="text-text" readonly style="box-sizing: border-box;"></textarea><br><br>
+            <button onclick="copy('text-text')" class="width100">复制内容</button><br><br>
+            <button onclick="downloadtxt(document.getElementById('text-filename').value || 'default.txt',document.getElementById('text-text').value)" class="width100">下载内容</button><br><br>
+            <button onclick="document.getElementById('text-filename').value='';document.getElementById('text-text').value='';document.querySelector('.c4').style = 'display: none';" class="width100">清空并关闭</button>
+    </div>
     <div class="container">
         <div class="loader-container">
             <div class="loader">
@@ -323,7 +345,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
                 font-size: 1.5em;
             }
 
-            #messageInput {
+            #messageInput,#text-filename {
                 padding: 8px;
             }
 
@@ -341,6 +363,7 @@ body.dark-mode .info-container,
 body.dark-mode .c1,
 body.dark-mode .c2,
 body.dark-mode .c3,
+body.dark-mode .c4,
 body.dark-mode #messages {
     background: #2d2d2d;
     color: #fff;
@@ -351,7 +374,8 @@ body.dark-mode .received {
     color: #fff;
 }
 
-body.dark-mode #messageInput {
+body.dark-mode #messageInput,
+body.dark-mode #text-filename {
     background: #404040;
     color: #fff;
     border-color: #666;
@@ -365,7 +389,11 @@ body.dark-mode h1,
 body.dark-mode h3 {
     color: #fff;
 }
-
+body.dark-mode #text-text{
+    background: #404040;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
     </style>
 </body>
 </html>

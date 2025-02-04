@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text - HTransfer</title>
+    <title>Chat - HTransfer</title>
     <meta name="description" content="方便快捷的多设备浏览器端的传输、控制解决方案 - HTransfer"/>
     <meta name="keywords" content="设备, Transfer, 传输, 控制, Device, Control, Tool, 工具"/>
     <style>
@@ -18,6 +18,13 @@
             padding: 20px;
             max-width: 800px;
             margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        /* 暗色模式样式 */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #fff;
         }
 
         h1 {
@@ -25,6 +32,10 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 24px;
+        }
+
+        body.dark-mode h1 {
+            color: #fff;
         }
 
         #messages {
@@ -35,6 +46,12 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode #messages {
+            background: #2d2d2d;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         .message {
@@ -56,6 +73,11 @@
             color: #333;
         }
 
+        body.dark-mode .received {
+            background: #404040;
+            color: #fff;
+        }
+
         .timestamp {
             font-size: 12px;
             margin-top: 4px;
@@ -66,42 +88,30 @@
             display: flex;
             gap: 10px;
         }
-                /* 暗色模式样式 */
-                body.dark-mode {
-            background-color: #1a1a1a;
-            color: #fff;
-        }
-        body.dark-mode h1 {
-            color: #fff;
-        }        body.dark-mode #messages {
-            background: #2d2d2d;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }        body.dark-mode .received {
-            background: #404040;
-            color: #fff;
-        }
 
-        #messageInputTitle,#messageInput {
+        #messageInput {
+            flex: 1;
             padding: 12px;
             border: none;
             border-radius: 25px;
             background: white;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             font-size: 16px;
-            width:100%;
-            max-width:100%;
-        }
-        #messageInput{
-            height:50vh;
+            transition: all 0.3s ease;
         }
 
-        #messageInputTitle:focus,#messageInput:focus {
+        body.dark-mode #messageInput {
+            background: #404040;
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        #messageInput:focus {
             outline: none;
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         button {
-            margin-top:1.5rem;
             padding: 12px 24px;
             border: none;
             border-radius: 25px;
@@ -116,6 +126,19 @@
             background: #0056b3;
         }
 
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -124,46 +147,28 @@
             .message {
                 max-width: 85%;
             }
-        }
-        body.dark-mode #messageInput {
-            background: #404040;
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        body.dark-mode #messageInputTitle {
-            background: #404040;
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }/* 主题切换按钮样式 */
-.theme-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: #007AFF;
-    color: white;
-    border: none;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: 0 2px 6px rgba(0,122,255,0.3);
-}
 
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleDarkMode()">切换主题</button>
-    <h1>Text - HTransfer</h1>
-    <div id="messages" style="display:none;"></div>
-        <input type="text" id="messageInputTitle" placeholder="输入文件名..." /><br><br>
-        <textarea type="text" id="messageInput" placeholder="输入消息..." ></textarea>
-        <button onclick="sendMessage()" style="width:100%;">发送</button>
+    <h1>Chat - HTransfer</h1>
+    <div id="messages"></div>
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="输入消息..." 
+               onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">发送</button>
+    </div>
     <script src="/global.js"></script>
     <script>
         let ws;
         const messagesDiv = document.getElementById('messages');
         const messageInput = document.getElementById('messageInput');
-
         function init() {
             const urlParams = new URLSearchParams(window.location.search);
             const connectionId = urlParams.get('id');
@@ -174,6 +179,7 @@
                 const message = JSON.parse(event.data);
                 displayMessage(message, 'received');
             };
+
         }
 
         function sendMessage() {
@@ -182,14 +188,12 @@
             const message = {
                 text: messageInput.value,
                 timestamp: new Date().toISOString(),
-                type: "text",
-                "title":document.getElementById('messageInputTitle').value
+                type: "message"
             };
             
             ws.send(JSON.stringify(message));
             displayMessage(message, 'sent');
             messageInput.value = '';
-            document.getElementById('messageInputTitle').value=""
         }
 
         function displayMessage(message, type) {
