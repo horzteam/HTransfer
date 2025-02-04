@@ -179,6 +179,10 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             color: #007bff;
             text-decoration: none;
         }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
 
         .footer img {
             vertical-align: middle;
@@ -233,6 +237,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
         <h3>Features</h3>
         <div class="input-container">
             <button onclick="togglechat(this)">打开信息框</button>
+            <button class="theme-toggle" onclick="toggleDarkMode()">切换主题</button>
         </div>
     </div>
 
@@ -326,6 +331,41 @@ Computed by MZCompute GmbH. [wang@mingze.de]
                 padding: 8px 15px;
             }
         }
+        /* 暗色模式样式 */
+body.dark-mode {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+body.dark-mode .info-container,
+body.dark-mode .c1,
+body.dark-mode .c2,
+body.dark-mode .c3,
+body.dark-mode #messages {
+    background: #2d2d2d;
+    color: #fff;
+}
+
+body.dark-mode .received {
+    background: #404040;
+    color: #fff;
+}
+
+body.dark-mode #messageInput {
+    background: #404040;
+    color: #fff;
+    border-color: #666;
+}
+
+body.dark-mode .footer {
+    color: #999;
+}
+
+body.dark-mode h1,
+body.dark-mode h3 {
+    color: #fff;
+}
+
     </style>
 </body>
 </html>

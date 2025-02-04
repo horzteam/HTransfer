@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - HTransfer</title>
+    <style>
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat - HTransfer</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="输入消息">
+    <button onclick="sendMessage()">发送</button>
+    <script src="/global.js"></script>
+    <script>
+        let ws;
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const connectionId = urlParams.get('id');
+            
+            ws = new WebSocket(`wss://${basedomain}?id=${connectionId}`);
+            
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                displayMessage(message, 'received');
+            };
+        }
+
+        function sendMessage() {
+            const message = {
+                text: messageInput.value,
+                timestamp: new Date().toISOString(),
+                type:"message"
+            };
+            
+            ws.send(JSON.stringify(message));
+            displayMessage(message, 'sent');
+            messageInput.value = '';
+        }
+
+        function displayMessage(message, type) {
+            const div = document.createElement('div');
+            div.style.textAlign = type === 'sent' ? 'right' : 'left';
+            div.style.color = type === 'sent' ? 'blue' : 'green';
+            div.textContent = `${message.text} (${new Date(message.timestamp).toLocaleTimeString()})`;
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        init();
+    </script>
+</body>
+</html>
