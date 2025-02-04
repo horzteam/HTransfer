@@ -102,10 +102,47 @@
                 padding: 20px;
             }
         }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 15px;
+            background: #007AFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,122,255,0.3);
+        }
+
+        button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,122,255,0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+        #messageInput {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
     </style>
 </head>
 <body>
-    <h1>Client - HTransfer</h1>
+    <h1>接收端 - HTransfer</h1>
+    <div class="noid"></div>
     
     <div class="cards-container">
         <a href="/send/message.html" class="card linka">
@@ -131,11 +168,31 @@
 
     <script src="/global.js"></script>
     <script>
+        document.querySelector(".noid").style="display:none;"
         var connectionId = "";
+        const urlParams = new URLSearchParams(window.location.search);
+        connectionId = urlParams.get('id');
+        if(!connectionId){
+            document.querySelector(".cards-container").style="display:none;";
+            document.querySelector(".noid").innerHTML=`<div class="card" style="max-width:500px;margin:auto;">
+            <div class="card-title">ID绑定设备</div>
+            <div class="card-description">
+                <input type="text" id="messageInput" placeholder="输入设备ID" 
+                onkeypress="if(event.key === 'Enter') bind()">
+         <button onclick="bind()">绑定设备</button>
+            </div>
+        </div>
+        <div class="card" style="max-width:500px;margin:auto;margin-top:1.5rem">
+            <div class="card-title">QRCode绑定设备</div>
+            <div class="card-description">
+                <span>暂未支持QRCode扫描！</span>
+            </div>
+        </div>
+        `
+            document.querySelector(".noid").style="display:block;"
+        }
 
         function init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            connectionId = urlParams.get('id');
             var x = document.querySelectorAll(".linka");
             var i;
             for (i = 0; i < x.length; i++) {
@@ -143,6 +200,10 @@
             }
         }
         init();
+        function bind(){
+            const id=document.querySelector("#messageInput").value;
+            location.href="/receiver.html?id="+id
+        }
     </script>
 </body>
 </html>
