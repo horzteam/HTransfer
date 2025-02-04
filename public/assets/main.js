@@ -138,3 +138,13 @@ function imhere() {
     hbs = 0;
     document.querySelector(".c2").style = "display: none";
 };
+
+function togglechat(elem){
+    if(elem.innerHTML=="打开信息框"){
+        document.querySelector(".c1").style = "display: block";
+        elem.innerHTML="关闭信息框";
+    }else{
+document.querySelector(".c1").style = "display: none";
+elem.innerHTML="打开信息框";
+    }
+}
