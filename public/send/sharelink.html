@@ -46,7 +46,7 @@ body.dark-mode .received {
 /* 主题切换按钮样式 */
 .theme-toggle {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
     padding: 8px 16px;
     border-radius: 20px;
@@ -196,7 +196,7 @@ body.dark-mode .received {
                 flex-direction: column;
             }
 
-            button {
+            #jump {
                 width: 100%;
             }
         }
@@ -211,7 +211,7 @@ body.dark-mode .received {
     <div class="input-container">
         <input type="text" id="messageInput" placeholder="输入链接" 
                onkeypress="if(event.key === 'Enter') sendMessage()">
-        <button onclick="sendMessage()">跳转链接</button>
+        <button onclick="sendMessage()" id="jump">跳转链接</button>
     </div>
 
     <script src="/global.js"></script>
