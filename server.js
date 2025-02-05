@@ -11,8 +11,8 @@ const wss = new WebSocket.Server({ server });
 
 // 存储连接配对
 const connections = new Map();
-const basedomain = "www.transfer.cool"
-//const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
+//const basedomain = "www.transfer.cool"
+const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
 
 const MAX_CONNECTIONS_PER_PAIR = 2;
 
@@ -78,17 +78,19 @@ wss.on('connection', (ws, req) => {
         }
     });
     ws.on('message', (message) => {
+        const msg=message.toString();
         try {
-            if(JSON.parse(message.toString()).type!="h"){const conn = findConnectionBySocket(ws);
+            if(JSON.parse(message.toString()).type!="h"){
+                const conn = findConnectionBySocket(ws);
                 if (conn) {
                     const [connId, { initiator, receiver }] = conn;
                     const role = ws === initiator ? '发送端' : '接收端';
                     const target = ws === initiator ? receiver : initiator;
-                    console.log(`[HT-T][${connId}] ${role} 发送消息:`, + message.toString());
+                    console.log(`[HT-T][${connId}] ${role} 发送消息:` + msg);
                     
                     if (target && target.readyState === WebSocket.OPEN) {
                         target.send(message.toString());
-                    }
+                    };
                 }}
         }
         catch(err) {
