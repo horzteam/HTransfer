@@ -33,8 +33,8 @@ const wss = new WebSocket.Server({ server });
 
 // 存储连接配对
 const connections = new Map();
-//const basedomain = "www.transfer.cool"
-const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
+const basedomain = "www.transfer.cool"
+//const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
 
 const MAX_CONNECTIONS_PER_PAIR = 2;
 

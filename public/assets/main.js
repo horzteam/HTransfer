@@ -13,7 +13,6 @@ document.querySelector(".c1").style = "display: none";
 document.querySelector(".c2").style = "display: none";
 document.querySelector(".c4").style = "display: none";
 document.querySelector(".c5").style = "display: none";
-// create-connection-byid
 function initinput(title,onclickfunc){
     document.querySelector(".c5").style = "display: block";
     document.querySelector("#text-input-title").innerHTML=title;
@@ -209,6 +208,7 @@ function ChangeDIYID(){
 
 function ChangeDIYIDCallback(){
     var b = document.querySelector("#text-input").value;
+    document.querySelector(".c2").style = "display: none";
     localStorage.setItem("DIYID",b);
     reload();
 }
