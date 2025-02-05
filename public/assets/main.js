@@ -1,10 +1,10 @@
 const maxhb = 3; //最大心跳数
 const maxhbinconn = 10; //连接二端最大心跳数（每次发信刷新）
 
-
 let ws;
 var cid;
 var cstatus;
+var textApplyCallbackFunc;
 var hbs = 0;
 const o1 = document.querySelector("#output1");
 const messagesDiv = document.getElementById('messages');
@@ -12,6 +12,19 @@ const messageInput = document.getElementById('messageInput');
 document.querySelector(".c1").style = "display: none";
 document.querySelector(".c2").style = "display: none";
 document.querySelector(".c4").style = "display: none";
+document.querySelector(".c5").style = "display: none";
+// create-connection-byid
+function initinput(title,onclickfunc){
+    document.querySelector(".c5").style = "display: block";
+    document.querySelector("#text-input-title").innerHTML=title;
+    document.querySelector("#text-input").value="";
+    textApplyCallbackFunc=onclickfunc;
+}
+
+function textApplyCallback(){
+    eval(textApplyCallbackFunc+"()");
+    document.getElementById('inputcbase').style='display: none';
+}
 
 function downloadtxt(filename, text) {
     var element = document.createElement('a');
@@ -46,8 +59,22 @@ async function init(initv = 1) {
         document.getElementById("iddisplayoutput2").innerHTML = "ID: " + connectionId;
         document.getElementById("iddisplayoutput").href = url;
     }
+    if(initv==5){
+        o1.innerHTML = "更换ID中<br>(´⊙ω⊙`)";
+        const response = await fetch('https://' + basedomain + '/create-connection-byid?id='+localStorage.getItem("DIYID"));
+        const { connectionId, qrCode, url, msg } = await response.json();
+        if(msg=="bad"){
+            ChangeDIYIDCallbackBad();
+            return;
+        }
+        cid = connectionId;
+        document.getElementById('qrcode').src = qrCode;
+        document.getElementById("iddisplayoutput2").innerHTML = "ID: " + connectionId;
+        document.getElementById("iddisplayoutput").href = url;
+    }
 
     ws = new WebSocket(`wss://${basedomain}?id=${cid}`);
+    document.querySelector(".c5").style = "display: none";
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
         displayMessage(message, 'received');
@@ -154,7 +181,14 @@ function displayMessage(message, type) {
     if(message.type=="text"){displayText(message)};
 }
 
-init();
+function reload(){
+    if(localStorage.getItem("DIYID")){
+        init(5);
+    }else{
+        init();
+    }
+}
+
 
 // 添加回车发送功能
 messageInput.addEventListener('keypress', function (e) {
@@ -169,6 +203,20 @@ function imhere() {
     document.querySelector(".c2").style = "display: none";
 };
 
+function ChangeDIYID(){
+    initinput("请输入自定义ID (设置为空为随机)","ChangeDIYIDCallback")
+}
+
+function ChangeDIYIDCallback(){
+    var b = document.querySelector("#text-input").value;
+    localStorage.setItem("DIYID",b);
+    reload();
+}
+function ChangeDIYIDCallbackBad(){
+    initinput("五秒后本页面自动使用随机ID<br>已被占用的连接，请重新输入新ID<br>请输入自定义ID (设置为空为随机)","ChangeDIYIDCallback");
+    setTimeout("init()", 5000)
+    
+}
 function togglechat(elem){
     if(elem.innerHTML=="打开信息框"){
         document.querySelector(".c1").style = "display: block";
@@ -178,3 +226,5 @@ document.querySelector(".c1").style = "display: none";
 elem.innerHTML="打开信息框";
     }
 }
+
+reload()

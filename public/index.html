@@ -26,187 +26,6 @@ Computed by MZCompute GmbH. [wang@mingze.de]
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="方便快捷的多设备浏览器端的传输、控制解决方案 - HTransfer"/>
     <meta name="keywords" content="设备, Transfer, 传输, 控制, Device, Control, Tool, 工具"/>
-    <style>
-        /* 整体样式 */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        /* 头部样式 */
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2em;
-        }
-
-        /* 消息区域样式 */
-        #messages {
-            height: 450px;
-            overflow-y: auto;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }.c1 {
-            height: 680px;
-            overflow-y: auto;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .c2,.c3,.c4 {
-            height: 100%;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        /* 消息气泡样式 */
-        .message {
-            margin: 10px 0;
-            padding: 10px 15px;
-            border-radius: 15px;
-            max-width: 70%;
-            word-wrap: break-word;
-        }
-
-        .sent {
-            background: #007bff;
-            color: white;
-            margin-left: auto;
-        }
-
-        .received {
-            background: #e9ecef;
-            color: #333;
-        }
-
-        /* 输入区域样式 */
-        .input-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        #messageInput,#text-filename {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        #messageInput:focus,#text-filename:focus {
-            border-color: #007bff;
-        }
-
-        button {
-            padding: 12px 25px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        /* 信息显示区域 */
-        .info-container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .urlinfo {
-            margin: 10px 0;
-            color: #666;
-            line-height: 1.6;
-        }
-
-        /* 二维码样式 */
-        #qrcode {
-            display: block;
-            margin: 20px auto;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }#iddisplay {
-            display: block;
-            text-align: center;
-        }
-
-        /* 加载动画样式 */
-        .loader-container {
-            text-align: center;
-            padding: 40px;
-        }
-
-        /* 页脚样式 */
-        .footer {
-            text-align: center;
-            color: #666;
-            margin-top: auto;
-        }
-
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .footer img {
-            vertical-align: middle;
-            margin-right: 5px;
-        }
-        .width100{
-            width: 100%;
-        }
-        #text-text{
-            padding: 12px;
-            border: none;
-            border-radius: 25px;
-            background: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            font-size: 16px;
-            width:100%;
-            max-width:100%;
-            height:50vh;
-        }
-        #text-text:focus{
-            outline: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-    </style>
 </head>
 <body>
     <h1>HTransfer</h1>
@@ -216,7 +35,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
         <div class="urlcontainer">
             <pre class="urlinfo" id="urlinfo"></pre>
             <img alt="qrcode" src="" id="qrcode" height="120px" />
-            <div id="iddisplay"><a id="iddisplayoutput" target="_blank" href="https://www.transfer.cool/receiver.html"><span id="iddisplayoutput2">等待获取ID</span></a> <a id="iddisplayoutputchange" onclick="init(2)" href="#changeID"><span>更换ID</span></a></div>
+            <div id="iddisplay"><a id="iddisplayoutput" target="_blank" href="https://www.transfer.cool/receiver.html"><span id="iddisplayoutput2">等待获取ID</span></a> <a id="iddisplayoutput2" onclick="init(2)"><span>刷新ID</span></a></div>
         </div>
     </div>
 
@@ -244,6 +63,15 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             <button onclick="downloadtxt(document.getElementById('text-filename').value || 'default.txt',document.getElementById('text-text').value)" class="width100">下载内容</button><br><br>
             <button onclick="document.getElementById('text-filename').value='';document.getElementById('text-text').value='';document.querySelector('.c4').style = 'display: none';" class="width100">清空并关闭</button>
     </div>
+
+    <div class="c5 cbase" id="inputcbase">
+        <h1>InputComponent - HTransfer</h1>
+        <div style="text-align: center;"><span id="text-input-title"></span></div><br><br>
+        <input type="text" value="" class="width100 text-input" id="text-input" style="box-sizing: border-box;"><br><br>
+        <button onclick="textApplyCallback()" class="width100" id="text-apply">提交</button><br><br>
+        <button onclick="document.getElementById('inputcbase').style='display: none'" class="width100" id="text-applyclose">关闭</button>
+    </div>
+
     <div class="container">
         <div class="loader-container">
             <div class="loader">
@@ -260,6 +88,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
         <div class="input-container">
             <button onclick="togglechat(this)">打开信息框</button>
             <button class="theme-toggle" onclick="toggleDarkMode()">切换主题</button>
+            <button class="theme-toggle" onclick="ChangeDIYID()">自定义ID</button>
         </div>
     </div>
 
@@ -268,133 +97,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
     </div>
     <script src="/global.js"></script>
     <script src="./assets/main.js"></script>
-
-    <style>
-        /* 加载动画相关样式 */
-        .loader {
-            position: relative;
-            margin: 0 auto;
-            width: 100px;
-        }
-
-        .circular {
-            animation: rotate 2s linear infinite;
-            height: 100%;
-            transform-origin: center center;
-            width: 100%;
-        }
-
-        .path {
-            stroke-dasharray: 1, 200;
-            stroke-dashoffset: 0;
-            animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
-            stroke-linecap: round;
-        }
-
-        @keyframes rotate {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes dash {
-            0% {
-                stroke-dasharray: 1, 200;
-                stroke-dashoffset: 0;
-            }
-            50% {
-                stroke-dasharray: 89, 200;
-                stroke-dashoffset: -35px;
-            }
-            100% {
-                stroke-dasharray: 89, 200;
-                stroke-dashoffset: -124px;
-            }
-        }
-
-        @keyframes color {
-            0%, 100% {
-                stroke: #007bff;
-            }
-            40% {
-                stroke: #2ecc71;
-            }
-            66% {
-                stroke: #e74c3c;
-            }
-            80%, 90% {
-                stroke: #f1c40f;
-            }
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            #messages {
-                height: 300px;
-            }
-
-            .message {
-                max-width: 85%;
-            }
-
-            h1 {
-                font-size: 1.5em;
-            }
-
-            #messageInput,#text-filename {
-                padding: 8px;
-            }
-
-            button {
-                padding: 8px 15px;
-            }
-        }
-        /* 暗色模式样式 */
-body.dark-mode {
-    background: #1a1a1a;
-    color: #fff;
-}
-
-body.dark-mode .info-container,
-body.dark-mode .c1,
-body.dark-mode .c2,
-body.dark-mode .c3,
-body.dark-mode .c4,
-body.dark-mode #messages {
-    background: #2d2d2d;
-    color: #fff;
-}
-
-body.dark-mode .received {
-    background: #404040;
-    color: #fff;
-}
-
-body.dark-mode #messageInput,
-body.dark-mode #text-filename {
-    background: #404040;
-    color: #fff;
-    border-color: #666;
-}
-
-body.dark-mode .footer {
-    color: #999;
-}
-
-body.dark-mode h1,
-body.dark-mode h3 {
-    color: #fff;
-}
-body.dark-mode #text-text{
-    background: #404040;
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-    </style>
+    <link rel="stylesheet" href="./assets/main.css" />
 </body>
 </html>
 

@@ -1,3 +1,25 @@
+/*
+
+$$\   $$\ $$$$$$$$\                                      $$$$$$\                     
+$$ |  $$ |\__$$  __|                                    $$  __$$\                    
+$$ |  $$ |   $$ | $$$$$$\  $$$$$$\  $$$$$$$\   $$$$$$$\ $$ /  \__|$$$$$$\   $$$$$$\  
+$$$$$$$$ |   $$ |$$  __$$\ \____$$\ $$  __$$\ $$  _____|$$$$\    $$  __$$\ $$  __$$\ 
+$$  __$$ |   $$ |$$ |  \__|$$$$$$$ |$$ |  $$ |\$$$$$$\  $$  _|   $$$$$$$$ |$$ |  \__|
+$$ |  $$ |   $$ |$$ |     $$  __$$ |$$ |  $$ | \____$$\ $$ |     $$   ____|$$ |      
+$$ |  $$ |   $$ |$$ |     \$$$$$$$ |$$ |  $$ |$$$$$$$  |$$ |     \$$$$$$$\ $$ |      
+\__|  \__|   \__|\__|      \_______|\__|  \__|\_______/ \__|      \_______|\__|      
+                                                                                     
+                                                                                     
+                                                                                     
+HTransfer - transfer.cool
+
+Copyright 2025 HoRzTeam [i@horz.team]
+
+Computed by MZCompute GmbH. [wang@mingze.de]
+
+*/
+
+
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -149,6 +171,23 @@ app.get('/create-connection', async (req, res) => {
     const qrCode = await QRCode.toDataURL(url);
     console.log(`[HT-新建链接ID][${connectionId}] 创建新连接`);
     res.json({ connectionId, qrCode, url });
+
+});
+app.get('/create-connection-byid', async (req, res) => {
+    try{
+        let connectionId = req.query.id;
+        if(connections.has(connectionId)){
+            res.json({ msg:"bad" });
+        }
+        
+        const url = `${req.protocol}://${basedomain}/receiver.html?id=${connectionId}`;
+        const qrCode = await QRCode.toDataURL(url);
+        console.log(`[HT-DIY链接ID][${connectionId}] 创建新连接`);
+        res.json({ connectionId, qrCode, url, msg:"ok" });
+    }catch{
+
+    }
+
 
 });
 
