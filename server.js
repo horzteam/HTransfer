@@ -167,7 +167,7 @@ app.get('/create-connection', async (req, res) => {
         connectionId = generateRandomString(9);
     } while (connections.has(connectionId));
     
-    const url = `${req.protocol}://${basedomain}/receiver.html?id=${connectionId}`;
+    const url = `https://${basedomain}/receiver.html?id=${connectionId}`;
     const qrCode = await QRCode.toDataURL(url);
     console.log(`[HT-新建链接ID][${connectionId}] 创建新连接`);
     res.json({ connectionId, qrCode, url });
@@ -180,7 +180,7 @@ app.get('/create-connection-byid', async (req, res) => {
             res.json({ msg:"bad" });
         }
         
-        const url = `${req.protocol}://${basedomain}/receiver.html?id=${connectionId}`;
+        const url = `https://${basedomain}/receiver.html?id=${connectionId}`;
         const qrCode = await QRCode.toDataURL(url);
         console.log(`[HT-DIY链接ID][${connectionId}] 创建新连接`);
         res.json({ connectionId, qrCode, url, msg:"ok" });
