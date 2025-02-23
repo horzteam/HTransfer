@@ -152,7 +152,7 @@ function displayMessage(message, type) {
         if (message.status == "waiting") {
             cstatus = 0;
             o1.innerHTML = "连接服务器成功，等待连接！<br>o(*^▽^*)┛"
-            document.getElementById("urlinfo").innerHTML = "使用教程<br><br>1. 另一个设备扫描二维码或点击链接<br>2. 进行操作"
+            document.getElementById("urlinfo").innerHTML = "使用教程<br><br>1. 另一个设备扫描二维码或访问 <a href='https://5432.xin/conn'>5432.xin/conn</a><br>2. 点击功能即可与本机通讯"
         }
         if (message.status == "connected") {
             o1.innerHTML = "连接第二端成功，等待数据！<br>(*￣3￣)╭"
