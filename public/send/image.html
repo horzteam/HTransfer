@@ -195,7 +195,7 @@
       const formData = new FormData();
       formData.append("file", fileInput.files[0]);
 
-      fetch(imgbaseurl+"/upload", {
+      fetch("https://omega.mingze.de/api/getimage.php", {
         method: "POST",
         headers: {
           "accept": "application/json, text/plain, */*",
