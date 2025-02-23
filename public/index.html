@@ -30,6 +30,9 @@ Computed by MZCompute GmbH. [wang@mingze.de]
 </head>
 <body>
     <h1>HTransfer</h1>
+    <center><span>方便快捷的多设备浏览器端的传输、控制解决方案程序</span></center>
+    <br>
+    <br>
 
     <div class="info-container">
         <p class="info2" id="info2"></p>
@@ -56,6 +59,7 @@ Computed by MZCompute GmbH. [wang@mingze.de]
             <button onclick="sendMessage(messageInput.value,'message')">发送</button>
         </div>
     </div>
+
     <div class="c4">
         <h1>Text - HTransfer</h1>
         <input type="text" id="text-filename" readonly value="Filename" class="width100" style="box-sizing: border-box;"><br><br>
@@ -71,6 +75,13 @@ Computed by MZCompute GmbH. [wang@mingze.de]
         <input type="text" value="" class="width100 text-input" id="text-input" style="box-sizing: border-box;"><br><br>
         <button onclick="textApplyCallback()" class="width100" id="text-apply">提交</button><br><br>
         <button onclick="document.getElementById('inputcbase').style='display: none'" class="width100" id="text-applyclose">关闭</button>
+    </div>
+
+    <div class="c7 cbase" id="picturebase">
+        <h1>Image - HTransfer</h1>
+<img src="" style="max-width: 100%; max-height: 600px;" alt="transfer_image" class="transferpic" /><br><br>
+        <a href="" download="" class="picture_download"><button class="width100" id="img_download">下载</button></a><br><br>
+        <button onclick="document.getElementById('picturebase').style='display: none'" class="width100" id="img-applyclose">关闭</button>
     </div>
 
     <div class="container">

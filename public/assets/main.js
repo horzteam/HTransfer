@@ -1,5 +1,5 @@
-const maxhb = 3; //最大心跳数
-const maxhbinconn = 10; //连接二端最大心跳数（每次发信刷新）
+const maxhb = 10; //最大心跳数
+const maxhbinconn = 30; //连接二端最大心跳数（每次发信刷新）
 
 let ws;
 var cid;
@@ -13,11 +13,19 @@ document.querySelector(".c1").style = "display: none";
 document.querySelector(".c2").style = "display: none";
 document.querySelector(".c4").style = "display: none";
 document.querySelector(".c5").style = "display: none";
+document.querySelector(".c7").style = "display: none";
 function initinput(title,onclickfunc){
     document.querySelector(".c5").style = "display: block";
     document.querySelector("#text-input-title").innerHTML=title;
     document.querySelector("#text-input").value="";
     textApplyCallbackFunc=onclickfunc;
+}
+
+function displayImageINF(message){
+    document.querySelector(".transferpic").src=message.text;
+    document.querySelector(".picture_download").href=message.text;
+    document.querySelector(".picture_download").download=message.text;
+    document.querySelector(".c7").style = "display: block";
 }
 
 function textApplyCallback(){
@@ -117,18 +125,7 @@ function sendMessage(text, method = "message") {
     hbs = 0;
 }
 
-function displayStatus(message) {
-    if (message.status == "waiting") {
-        return "连接服务器成功，等待连接！ o(*^▽^*)┛";
-    }
-    else if (message.status == "connected") {
-        return "连接第二端成功，等待数据！ (*￣3￣)╭";
-    }
-    else if (message.status == "disconnected") {
-        return "已断开连接！ （；´д｀）ゞ";
-    }
-    return void (0);
-}
+
 
 function displayText(message){
     document.getElementById("text-filename").value=message.title;
@@ -137,6 +134,7 @@ function displayText(message){
 }
 
 function displayMessage(message, type) {
+    console.log(message)
     if (message.type != "h") {
         hbs = 0;
         const div = document.createElement('div');
@@ -178,6 +176,7 @@ function displayMessage(message, type) {
         setTimeout("location.href='" + message.text + "'", 3000)
     }
     if(message.type=="text"){displayText(message)};
+    if(message.type=="pic"){displayImageINF(message)}
 }
 
 function reload(){

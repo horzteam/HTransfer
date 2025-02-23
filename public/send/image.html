@@ -12,7 +12,10 @@
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-
+        .status-done {
+            color: #28a745 !important;
+            font-weight: 500;
+        }
         body {
             background-color: #f5f5f5;
             padding: 20px;
@@ -147,18 +150,22 @@
             .message {
                 max-width: 85%;
             }
+
         }
+        
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="toggleDarkMode()">切换主题</button>
-    <h1>Chat - HTransfer</h1>
-    <div id="messages"></div>
-    <div class="input-container">
-        <input type="text" id="messageInput" placeholder="输入消息..." 
-               onkeypress="if(event.key === 'Enter') sendMessage()">
-        <button onclick="sendMessage()">发送</button>
-    </div>
+    <h1>Image - HTransfer</h1>
+    <div id="messages" style="display: none;"></div>
+        <div class="qwbase"><input type="file" id="fileInput" /></div>
+        <span>目前仅支持小于5MB的图片文件 本服务由MZCompute GmbH.运营</span><br>
+        <span>不建议传输隐私图片！图片将在一年内清理，如需提前请联系 wang@mingze.de</span>
+        <br><br>
+        <button onclick="uploadFile()" style="width: 100%;">发送</button>
+        <br><br>
+        <div class="status" id="status" style="overflow-x: auto;"></div>
     <script src="/global.js"></script>
     <script>
         let ws;
@@ -176,7 +183,47 @@
             };
 
         }
+        function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const status = document.getElementById('status');
 
+      if (fileInput.files.length === 0) {
+        status.innerHTML = '请选择一个文件上传。';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      fetch(imgbaseurl+"/upload", {
+        method: "POST",
+        headers: {
+          "accept": "application/json, text/plain, */*",
+          "accept-language": "zh-CN,zh;q=0.9"
+        },
+        body: formData,
+        mode: "cors"
+      })
+      .then(response => response.json())
+      .then(data => {
+        status.innerHTML = `返回数据: ${JSON.stringify(data)}`;
+        if(data[0].src){
+            status.innerHTML="<span class='status-done'>上传成功</span>，"+status.innerHTML;
+        };
+        const tdata = {
+                text: imgbaseurl+data[0].src,
+                data:data,
+                timestamp: new Date().toISOString(),
+                type: "pic"
+            };
+        ws.send(JSON.stringify(tdata));
+        displayMessage(tdata, 'sent');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        status.innerHTML = '上传失败，请重试。';
+      });
+    }
         function sendMessage() {
             if (!messageInput.value.trim()) return;
             
@@ -192,13 +239,11 @@
         }
 
         function displayMessage(message, type) {
-            console.log(message)
             const div = document.createElement('div');
             div.className = `message ${type}`;
             
             const text = document.createElement('div');
-
-            text.textContent = message.text || displayStatus(message);
+            text.textContent = message.text;
             div.appendChild(text);
             
             const timestamp = document.createElement('div');

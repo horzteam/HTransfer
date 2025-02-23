@@ -218,38 +218,50 @@ body.dark-mode #messageInput::placeholder {
     </button>
     <h1>接收端 - HTransfer</h1>
     <div class="noid"></div>
+    <div class="cards-containers">
+        <div class="cards-container">
+            <a href="/send/message.html" class="card linka">
+                <div class="card-icon">
+                    <span class="material-icons">chat</span>
+                </div>
+                <div class="card-title">发送消息</div>
+                <div class="card-description">
+                    发送即时消息到其他设备
+                </div>
+            </a>
     
-    <div class="cards-container">
-        <a href="/send/message.html" class="card linka">
-            <div class="card-icon">
-                <span class="material-icons">chat</span>
-            </div>
-            <div class="card-title">发送消息</div>
-            <div class="card-description">
-                发送即时消息到其他设备
-            </div>
-        </a>
-
-        <a href="/send/sharelink.html" class="card linka">
-            <div class="card-icon">
-                <span class="material-icons">link</span>
-            </div>
-            <div class="card-title">分享链接</div>
-            <div class="card-description">
-                快速分享网页链接到其他设备
-            </div>
-        </a>
-
-        <a href="/send/text.html" class="card linka">
-            <div class="card-icon">
-                <span class="material-icons">description</span>
-            </div>
-            <div class="card-title">传输文本</div>
-            <div class="card-description">
-                快速分享文本文件到其他设备
-            </div>
-        </a>
+            <a href="/send/sharelink.html" class="card linka">
+                <div class="card-icon">
+                    <span class="material-icons">link</span>
+                </div>
+                <div class="card-title">分享链接</div>
+                <div class="card-description">
+                    快速分享网页链接到其他设备
+                </div>
+            </a>
+    
+            <a href="/send/text.html" class="card linka">
+                <div class="card-icon">
+                    <span class="material-icons">description</span>
+                </div>
+                <div class="card-title">传输文本</div>
+                <div class="card-description">
+                    快速分享文本文件到其他设备
+                </div>
+            </a>
+        </div>        <div class="cards-container">
+            <a href="/send/image.html" class="card linka">
+                <div class="card-icon">
+                    <span class="material-icons">image</span>
+                </div>
+                <div class="card-title">发送图片</div>
+                <div class="card-description">
+                    发送单张图片给设备
+                </div>
+            </a>
+        </div>
     </div>
+    
 
     <script src="/global.js"></script>
     <script>
@@ -258,7 +270,7 @@ body.dark-mode #messageInput::placeholder {
         const urlParams = new URLSearchParams(window.location.search);
         connectionId = urlParams.get('id');
         if(!connectionId){
-            document.querySelector(".cards-container").style="display:none;";
+            document.querySelector(".cards-containers").style="display:none;";
             document.querySelector(".noid").innerHTML=`<div class="card" style="max-width:500px;margin:auto;">
             <div class="card-title">ID绑定设备</div>
             <div class="card-description">

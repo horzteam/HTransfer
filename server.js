@@ -34,7 +34,7 @@ const wss = new WebSocket.Server({ server });
 // 存储连接配对
 const connections = new Map();
 const basedomain = "www.transfer.cool"
-//const basedomain = "cuddly-space-giggle-v5jjgq64wgwcx6pr-3000.app.github.dev"
+//const basedomain = "curly-halibut-59774xg6974f469g-3000.app.github.dev"
 
 const MAX_CONNECTIONS_PER_PAIR = 2;
 
@@ -149,7 +149,7 @@ function sendStatusMessage(ws, status) {
 }
 
 function generateRandomString(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789';
+    const characters = '0123456789';
     let result = '';
     for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
