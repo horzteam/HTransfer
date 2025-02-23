@@ -24,7 +24,6 @@ function initinput(title,onclickfunc){
 function displayImageINF(message){
     document.querySelector(".transferpic").src=message.text;
     document.querySelector(".picture_download").href=message.text;
-    document.querySelector(".picture_download").download=message.text;
     document.querySelector(".c7").style = "display: block";
 }
 
